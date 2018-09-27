@@ -28,34 +28,30 @@ class NumberGuessSkill(MycroftSkill):
 	answer = 0
 	userGuess = 0
 
+	def get_numerical_response(self, dialog):
+		while True:
+			val = self.get_response(dialog)
+			try:
+				val = int(val)
+				return val
+			except ValueError:
+				self.speak_dialog("invalid.input")
+			except:
+				self.speak_dialog("input.error")
+
 	@intent_handler(IntentBuilder("").require("NumberGuess").optionally("Play").optionally("Suggest"))
 	def handle_start_game_intent(self, message):
 		self.speak_dialog("start.game")
+
 		# get lower bound
-		while True:
-			lowerBound = self.get_response("get.lower")
-			try:
-				lowerBound = int(lowerBound)
-				break
-			except ValueError:
-				self.speak_dialog("invalid.input")
+		lowerBound = self.get_numerical_response("get.lower")
 		# get upper bound
-		while True:
-			upperBound = self.get_response("get.upper")
-			try:
-				upperBound = int(upperBound)
-				break
-			except ValueError:
-				self.speak_dialog("invalid.input")
+		upperBound = self.get_numerical_response("get.upper")
+
 		answer = randint(lowerBound, upperBound)
 		userGuess = lowerBound - 1
 		while userGuess != answer:
-			userGuess = self.get_response("guess")
-			try:
-				userGuess = int(userGuess)
-			except ValueError:
-				self.speak_dialog("invalid.input")
-				continue
+			userGuess = self.get_numerical_response("guess")
 			if userGuess < answer:
 				self.speak_dialog("too.low")
 			elif userGuess > answer:

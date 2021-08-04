@@ -15,6 +15,7 @@
 from adapt.intent import IntentBuilder
 from mycroft import MycroftSkill, intent_handler
 from mycroft.util.log import LOG, getLogger
+from lingua_franca.parse import extract_number
 
 from random import randint
 
@@ -31,6 +32,7 @@ class NumberGuessSkill(MycroftSkill):
 	def get_numerical_response(self, dialog):
 		while True:
 			val = self.get_response(dialog)
+			val = extract_number(val)
 			try:
 				val = int(val)
 				return val
